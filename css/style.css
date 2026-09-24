@@ -1,0 +1,509 @@
+/* =========================================
+   PIXELHUE PIXEL CALCULATOR
+   Custom Styles
+========================================= */
+
+body {
+    background-color: #0f172a;
+    color: #f8fafc;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        sans-serif;
+}
+
+
+/* =========================================
+   NUMBER INPUT
+========================================= */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+
+/* =========================================
+   RESOLUTION INPUT
+========================================= */
+
+.resolution-input {
+    width: 100%;
+
+    background-color: #020617;
+    border: 1px solid #1e293b;
+
+    border-radius: 0.75rem;
+
+    padding: 0.625rem 0.75rem;
+
+    text-align: center;
+
+    font-family: monospace;
+
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.resolution-input:focus {
+    outline: none;
+
+    border-color: #10b981;
+
+    box-shadow:
+        0 0 0 1px rgba(16, 185, 129, 0.2);
+}
+
+
+.resolution-divider {
+    display: flex;
+
+    align-items: center;
+
+    color: #475569;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   MODE BUTTON
+========================================= */
+
+.mode-btn {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    font-size: 0.75rem;
+    line-height: 1rem;
+
+    font-weight: 500;
+
+    border-radius: 0.5rem;
+
+    color: #94a3b8;
+
+    cursor: pointer;
+
+    transition:
+        background-color 150ms ease,
+        color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.mode-btn:hover {
+    color: white;
+}
+
+.mode-btn.active {
+    background-color: #10b981;
+
+    color: #020617;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================
+   COPY BUTTON
+========================================= */
+
+.copy-button {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.25rem;
+
+    padding: 0.375rem 0.75rem;
+
+    background-color: #1e293b;
+
+    color: #34d399;
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    border-radius: 0.5rem;
+
+    cursor: pointer;
+
+    transition:
+        background-color 150ms ease;
+}
+
+.copy-button:hover {
+    background-color: #334155;
+}
+
+
+/* =========================================
+   RESULT BADGES
+========================================= */
+
+.result-badge {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+    padding: 0.5rem 0.75rem;
+
+    background-color: #0f172a;
+
+    border: 1px solid #334155;
+
+    border-radius: 0.5rem;
+}
+
+.result-badge-label {
+    font-size: 0.625rem;
+
+    line-height: 1rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+    color: #64748b;
+}
+
+.result-badge-value {
+    font-size: 0.75rem;
+
+    font-weight: 700;
+
+    color: #34d399;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================
+   MAIN RESULT CARDS
+========================================= */
+
+.result-main-card {
+    background-color: #0f172a;
+
+    border: 1px solid #1e293b;
+
+    border-radius: 0.75rem;
+
+    padding: 1rem;
+}
+
+.result-label {
+    font-size: 0.625rem;
+
+    line-height: 1rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+    color: #64748b;
+
+    font-weight: 600;
+}
+
+.result-label-secondary {
+    font-size: 0.625rem;
+
+    color: #475569;
+}
+
+
+.result-number {
+    font-family: monospace;
+
+    font-size: 1.875rem;
+
+    line-height: 2.25rem;
+
+    font-weight: 700;
+
+    color: white;
+
+    letter-spacing: -0.025em;
+}
+
+
+.result-note {
+    margin-top: 0.25rem;
+
+    font-size: 0.625rem;
+
+    color: #34d399;
+}
+
+
+/* =========================================
+   OFFSET CARDS
+========================================= */
+
+.result-offset-card {
+    background-color: rgba(15, 23, 42, 0.7);
+
+    border: 1px solid #1e293b;
+
+    border-radius: 0.75rem;
+
+    padding: 0.75rem 1rem;
+}
+
+
+.result-offset-number {
+    margin-top: 0.125rem;
+
+    font-family: monospace;
+
+    font-size: 1.125rem;
+
+    line-height: 1.75rem;
+
+    font-weight: 700;
+
+    color: #34d399;
+}
+
+
+/* =========================================
+   DETAILS / FULL TEXT
+========================================= */
+
+.details-summary {
+    cursor: pointer;
+
+    user-select: none;
+
+    padding-left: 0.25rem;
+
+    font-size: 0.6875rem;
+
+    color: #64748b;
+
+    transition: color 150ms ease;
+}
+
+.details-summary:hover {
+    color: #cbd5e1;
+}
+
+
+.output-template {
+    width: 100%;
+
+    height: 12rem;
+
+    margin-top: 0.5rem;
+
+    padding: 1rem;
+
+    background-color: #020617;
+
+    border: 1px solid #1e293b;
+
+    border-radius: 0.75rem;
+
+    color: #cbd5e1;
+
+    font-family: monospace;
+
+    font-size: 0.75rem;
+
+    line-height: 1.625;
+
+    white-space: pre-wrap;
+
+    overflow-y: auto;
+
+    user-select: text;
+
+    -webkit-user-select: text;
+}
+
+
+/* =========================================
+   PREVIEW
+========================================= */
+
+.preview-header {
+    width: 100%;
+
+    margin-bottom: 1rem;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 1rem;
+}
+
+
+.preview-title {
+    font-size: 0.75rem;
+
+    line-height: 1rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+
+    color: #94a3b8;
+
+    white-space: nowrap;
+}
+
+
+.preview-legend {
+    display: flex;
+
+    gap: 1rem;
+
+    font-size: 0.625rem;
+
+    color: #94a3b8;
+}
+
+
+.legend-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.25rem;
+
+    white-space: nowrap;
+}
+
+
+.legend-input {
+    width: 0.75rem;
+    height: 0.75rem;
+
+    display: inline-block;
+
+    background-color: #334155;
+
+    border: 1px solid #475569;
+
+    border-radius: 0.125rem;
+}
+
+
+.legend-crop {
+    width: 0.75rem;
+    height: 0.75rem;
+
+    display: inline-block;
+
+    background-color: transparent;
+
+    border: 2px solid #34d399;
+
+    border-radius: 0.125rem;
+}
+
+
+/* =========================================
+   PREVIEW LABELS
+========================================= */
+
+.preview-input-label {
+    position: absolute;
+
+    font-size: 0.625rem;
+
+    font-family: monospace;
+
+    color: #94a3b8;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+
+.preview-crop-label {
+    position: absolute;
+
+    font-size: 0.625rem;
+
+    font-family: monospace;
+
+    font-weight: 700;
+
+    color: #6ee7b7;
+
+    background-color: rgba(2, 6, 23, 0.8);
+
+    padding: 0.125rem 0.375rem;
+
+    border: 1px solid rgba(16, 185, 129, 0.3);
+
+    border-radius: 0.375rem;
+
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.2);
+
+    pointer-events: none;
+
+    user-select: none;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 640px) {
+
+    .preview-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 0.75rem;
+    }
+
+    .preview-legend {
+        width: 100%;
+
+        justify-content: flex-start;
+
+        flex-wrap: wrap;
+
+        gap: 0.75rem;
+    }
+
+    .result-number {
+        font-size: 1.5rem;
+
+        line-height: 2rem;
+    }
+
+    .result-main-card {
+        padding: 0.875rem;
+    }
+}
+

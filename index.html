@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pixelhue Pixel Calculator + Visualizer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <main
+        class="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8"
+    >
+
+        <!-- =========================================
+             LEFT: CONTROL & OUTPUT
+        ========================================== -->
+        <section class="lg:col-span-7 flex flex-col justify-between">
+
+            <div>
+
+                <!-- Header -->
+                <header class="mb-6 border-b border-slate-800 pb-4">
+
+                    <h1 class="text-2xl font-bold tracking-tight text-emerald-400">
+                        Pixelhue Pixel Calculator
+                    </h1>
+
+                    <p class="text-sm text-slate-400 mt-1">
+                        Hitung konfigurasi Input Crop & Layer secara instan untuk orang lapangan.
+                    </p>
+
+                </header>
+
+
+                <!-- =========================================
+                     INPUT FORM
+                ========================================== -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+                    <!-- Source Input -->
+                    <div class="space-y-2">
+
+                        <label
+                            for="inputW"
+                            class="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        >
+                            Resolusi Input (Source)
+                        </label>
+
+                        <div class="flex gap-2">
+
+                            <input
+                                type="number"
+                                id="inputW"
+                                value="3840"
+                                min="1"
+                                aria-label="Source width"
+                                class="resolution-input"
+                            >
+
+                            <span class="resolution-divider">
+                                ×
+                            </span>
+
+                            <input
+                                type="number"
+                                id="inputH"
+                                value="2160"
+                                min="1"
+                                aria-label="Source height"
+                                class="resolution-input"
+                            >
+
+                        </div>
+                    </div>
+
+
+                    <!-- Target Screen -->
+                    <div class="space-y-2">
+
+                        <label
+                            for="targetW"
+                            class="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        >
+                            Resolusi Screen (Target LED)
+                        </label>
+
+                        <div class="flex gap-2">
+
+                            <input
+                                type="number"
+                                id="targetW"
+                                value="1344"
+                                min="1"
+                                aria-label="Target width"
+                                class="resolution-input"
+                            >
+
+                            <span class="resolution-divider">
+                                ×
+                            </span>
+
+                            <input
+                                type="number"
+                                id="targetH"
+                                value="1536"
+                                min="1"
+                                aria-label="Target height"
+                                class="resolution-input"
+                            >
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     MODE SELECTION
+                ========================================== -->
+                <div class="mb-6">
+
+                    <label
+                        class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2"
+                    >
+                        Pilih Mode Tampilan
+                    </label>
+
+                    <div
+                        class="grid grid-cols-4 gap-2 bg-slate-950 p-1.5 border border-slate-800 rounded-xl"
+                    >
+
+                        <button
+                            type="button"
+                            data-mode="fit"
+                            id="btn-fit"
+                            class="mode-btn"
+                        >
+                            Fit
+                        </button>
+
+                        <button
+                            type="button"
+                            data-mode="fill"
+                            id="btn-fill"
+                            class="mode-btn active"
+                        >
+                            Fill
+                        </button>
+
+                        <button
+                            type="button"
+                            data-mode="stretch"
+                            id="btn-stretch"
+                            class="mode-btn"
+                        >
+                            Stretch
+                        </button>
+
+                        <button
+                            type="button"
+                            data-mode="original"
+                            id="btn-original"
+                            class="mode-btn"
+                        >
+                            Original
+                        </button>
+
+                    </div>
+
+                    <p
+                        id="mode-desc"
+                        class="text-[11px] text-slate-500 mt-2 italic px-1"
+                    >
+                        Fill: Memotong (crop) input agar memenuhi layar target tanpa gepeng.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 RESULT
+            ========================================== -->
+            <div class="space-y-3 mt-4">
+
+                <!-- Result Header -->
+                <div class="flex justify-between items-center">
+
+                    <label
+                        class="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+                    >
+                        Hasil Parameter Pixelhue
+                    </label>
+
+                    <button
+                        type="button"
+                        id="copyButton"
+                        class="copy-button"
+                    >
+                        <span id="copy-text">
+                            Salin Teks
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <!-- Parameter Card -->
+                <div
+                    class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-inner"
+                >
+
+                    <!-- Status -->
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+
+                        <!-- Mode -->
+                        <div class="result-badge">
+
+                            <span class="result-badge-label">
+                                Mode
+                            </span>
+
+                            <span
+                                id="resultMode"
+                                class="result-badge-value"
+                            >
+                                FILL
+                            </span>
+
+                        </div>
+
+
+                        <!-- Crop -->
+                        <div class="result-badge">
+
+                            <span class="result-badge-label">
+                                Crop
+                            </span>
+
+                            <span
+                                id="resultCropState"
+                                class="result-badge-value"
+                            >
+                                Enable
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Width / Height -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+
+                        <!-- Width -->
+                        <div class="result-main-card">
+
+                            <div class="flex items-center justify-between mb-1">
+
+                                <span class="result-label">
+                                    Width
+                                </span>
+
+                                <span class="result-label-secondary">
+                                    LEBAR
+                                </span>
+
+                            </div>
+
+                            <div
+                                id="resultWidth"
+                                class="result-number"
+                            >
+                                1920
+                            </div>
+
+                            <div
+                                id="resultWidthNote"
+                                class="result-note"
+                            >
+                                Hasil perhitungan
+                            </div>
+
+                        </div>
+
+
+                        <!-- Height -->
+                        <div class="result-main-card">
+
+                            <div class="flex items-center justify-between mb-1">
+
+                                <span class="result-label">
+                                    Height
+                                </span>
+
+                                <span class="result-label-secondary">
+                                    TINGGI
+                                </span>
+
+                            </div>
+
+                            <div
+                                id="resultHeight"
+                                class="result-number"
+                            >
+                                1080
+                            </div>
+
+                            <div
+                                id="resultHeightNote"
+                                class="result-note"
+                            >
+                                Hasil perhitungan
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Offset -->
+                    <div class="grid grid-cols-2 gap-3">
+
+                        <!-- X -->
+                        <div class="result-offset-card">
+
+                            <div class="result-label">
+                                X / Left Offset
+                            </div>
+
+                            <div
+                                id="resultOffsetX"
+                                class="result-offset-number"
+                            >
+                                0
+                            </div>
+
+                        </div>
+
+
+                        <!-- Y -->
+                        <div class="result-offset-card">
+
+                            <div class="result-label">
+                                Y / Top Offset
+                            </div>
+
+                            <div
+                                id="resultOffsetY"
+                                class="result-offset-number"
+                            >
+                                0
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Detailed Text -->
+                <details class="group">
+
+                    <summary class="details-summary">
+
+                        <span class="group-open:hidden">
+                            ▸ Tampilkan teks parameter lengkap
+                        </span>
+
+                        <span class="hidden group-open:inline">
+                            ▾ Sembunyikan teks parameter lengkap
+                        </span>
+
+                    </summary>
+
+                    <pre
+                        id="outputTemplate"
+                        class="output-template"
+                    ></pre>
+
+                </details>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             RIGHT: LIVE PREVIEW
+        ========================================== -->
+        <section
+            class="lg:col-span-5 flex flex-col items-center justify-center bg-slate-950 rounded-2xl border border-slate-800 p-6 min-h-[350px]"
+        >
+
+            <!-- Preview Header -->
+            <div class="preview-header">
+
+                <span class="preview-title">
+                    Live Preview Simulator
+                </span>
+
+                <div class="preview-legend">
+
+                    <span class="legend-item">
+                        <span class="legend-input"></span>
+                        Input Canvas
+                    </span>
+
+                    <span class="legend-item">
+                        <span class="legend-crop"></span>
+                        Area Crop
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Preview Container -->
+            <div
+                id="previewContainer"
+                class="relative w-full aspect-video flex items-center justify-center bg-slate-900/50 rounded-xl border border-slate-800/50 p-2 overflow-hidden"
+            >
+
+                <!-- Input Canvas -->
+                <div
+                    id="inputBox"
+                    class="relative bg-slate-700/80 border border-slate-600 transition-all duration-300 flex items-center justify-center"
+                >
+
+                    <span
+                        id="inputLabel"
+                        class="preview-input-label"
+                    >
+                        Input
+                    </span>
+
+
+                    <!-- Crop Area -->
+                    <div
+                        id="cropBox"
+                        class="absolute border-2 border-emerald-400 bg-emerald-500/10 transition-all duration-300 flex items-center justify-center"
+                    >
+
+                        <span
+                            id="cropLabel"
+                            class="preview-crop-label"
+                        >
+                            Crop Area
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+        
+
+    </main>
+
+    
+
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+
+</body>
+</html>
