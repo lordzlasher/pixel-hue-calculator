@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pixelhue Pixel Calculator + Visualizer</title>
+    <title>Pixel Calculator + LED Screen Rental Hardware Calculator</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +15,36 @@
 
 <body class="min-h-screen flex items-center justify-center p-4 md:p-8">
 
+    <div class="calculator-shell w-full max-w-6xl">
+
+        <!-- NAVIGATION HOVER -->
+        <!-- <nav class="app-tabs" aria-label="Calculator navigation">
+       <button type="button" id="tab-pixel" class="calculator-tab active" role="tab" aria-selected="true">
+                Pixel Calculator
+            </button>
+         <button type="button" id="tab-hardware" class="calculator-tab" role="tab" aria-selected="false">
+                Hardware Calculator
+            </button>
+    </nav> -->
+
+        <!-- CALCULATOR TABS -->
+        <div class="calculator-tabs" role="tablist" aria-label="Calculator selection">
+            <button type="button" id="tab-pixel" class="calculator-tab active" role="tab" aria-selected="true">
+                Pixel Calculator
+            </button>
+            <button type="button" id="tab-hardware" class="calculator-tab" role="tab" aria-selected="false">
+                Hardware Calculator
+            </button>
+        </div>
+
     <main
-        class="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8"
+        class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 md:p-8"
     >
+
+        <!-- =========================================
+             PIXEL CALCULATOR
+        ========================================== -->
+        <div id="pixelCalculator" class="calculator-panel grid grid-cols-1 lg:grid-cols-12 gap-8">
 
         <!-- =========================================
              LEFT: CONTROL & OUTPUT
@@ -60,7 +87,6 @@
                             <input
                                 type="number"
                                 id="inputW"
-                                value="3840"
                                 min="1"
                                 aria-label="Source width"
                                 class="resolution-input"
@@ -73,7 +99,6 @@
                             <input
                                 type="number"
                                 id="inputH"
-                                value="2160"
                                 min="1"
                                 aria-label="Source height"
                                 class="resolution-input"
@@ -98,7 +123,6 @@
                             <input
                                 type="number"
                                 id="targetW"
-                                value="1344"
                                 min="1"
                                 aria-label="Target width"
                                 class="resolution-input"
@@ -111,7 +135,6 @@
                             <input
                                 type="number"
                                 id="targetH"
-                                value="1536"
                                 min="1"
                                 aria-label="Target height"
                                 class="resolution-input"
@@ -467,12 +490,124 @@
             </div>
 
         </section>
-        
+
+        </div>
+
+        <!-- =========================================
+             HARDWARE CALCULATOR
+        ========================================== -->
+        <section id="hardwareCalculator" class="calculator-panel hardware-panel hidden">
+            <header class="mb-6 border-b border-slate-800 pb-4">
+                <h1 class="text-2xl font-bold tracking-tight text-emerald-400">
+                    LED Screen Rental Hardware Calculator
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                    Hitung kebutuhan cabinet, box LED, LAN, power, standing bracket, klem, dan baut.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="space-y-2 md:col-span-1">
+                    <label for="hardwareLength" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Panjang LED (meter)
+                    </label>
+                    <input type="number" id="hardwareLength" class="resolution-input" min="0.5" max="100" step="0.5" placeholder="Contoh: 4">
+                </div>
+                <div class="space-y-2 md:col-span-1">
+                    <label for="hardwareHeight" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Tinggi LED (meter)
+                    </label>
+                    <input type="number" id="hardwareHeight" class="resolution-input" min="0.5" max="50" step="0.5" placeholder="Contoh: 3">
+                </div>
+                <div class="space-y-2 md:col-span-1">
+                    <label for="hardwarePitch" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Pitch LED
+                    </label>
+                    <select id="hardwarePitch" class="resolution-input hardware-select">
+                        <option value="P3.9">P3.9</option>
+                        <option value="P2.6">P2.6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="hardwareMessage" class="hardware-message mb-6">Masukkan panjang dan tinggi LED untuk melihat hasil.</div>
+
+            <div id="hardwareResults" class="hidden">
+                <div class="hardware-area-card mb-3">
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Total Area</span>
+                        <strong id="hardwareArea">—</strong>
+                        <span>m²</span>
+                    </div>
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Jumlah Box LED</span>
+                        <strong id="hardwareBoxes">—</strong>
+                        <span>box</span>
+                    </div>
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Resolusi LED</span>
+                        <strong id="hardwareResolution">—</strong>
+                        <span>px</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Total Cabinets</span>
+                        <strong id="hardwareCabinets">—</strong>
+                        <span>cabinet</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">LAN Runs</span>
+                        <strong id="hardwareLanRuns">—</strong>
+                        <span>run</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">LAN Loop</span>
+                        <strong id="hardwareLanLoop">—</strong>
+                        <span>loop</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Power Legran Runs</span>
+                        <strong id="hardwarePowerRuns">—</strong>
+                        <span>run</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Power Loop</span>
+                        <strong id="hardwarePowerLoop">—</strong>
+                        <span>loop</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Standing Bracket</span>
+                        <strong id="hardwareStand">—</strong>
+                        <span>stand</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Klem</span>
+                        <strong id="hardwareClamps">—</strong>
+                        <span>klem</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Baut</span>
+                        <strong id="hardwareBolts">—</strong>
+                        <span>baut</span>
+                    </div>
+                </div>
+
+                <details class="group mt-4">
+                    <summary class="details-summary">▸ Ringkasan Parameter Hardware</summary>
+                    <div class="hardware-summary-actions">
+                        <button type="button" id="hardwareCopyButton" class="copy-button">
+                            <span id="hardwareCopyText">Salin Teks</span>
+                        </button>
+                    </div>
+                    <pre id="hardwareOutput" class="output-template"></pre>
+                </details>
+            </div>
+        </section>
 
     </main>
-
-    
-
+    </div>
 
     <!-- JavaScript -->
     <script src="js/app.js"></script>

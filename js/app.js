@@ -93,16 +93,9 @@ const modeDescriptions = {
    INPUT EVENTS
 ========================================= */
 
-document
-    .querySelectorAll("input[type='number']")
-    .forEach(input => {
-
-        input.addEventListener(
-            "input",
-            calculatePixels
-        );
-
-    });
+[inputW, inputH, targetW, targetH].forEach(input => {
+    input.addEventListener("input", calculatePixels);
+});
 
 
 /* =========================================
@@ -191,10 +184,7 @@ function calculatePixels() {
         screenWidth <= 0 ||
         screenHeight <= 0
     ) {
-
-        outputTemplate.innerText =
-            "Masukkan angka resolusi yang valid.";
-
+        resetPixelResults();
         return;
     }
 
@@ -706,7 +696,172 @@ window.addEventListener(
 
 
 /* =========================================
-   INITIALIZE
+   PIXEL RESET / INITIALIZE
 ========================================= */
 
-calculatePixels();
+function resetPixelResults() {
+    resultMode.innerText = "—";
+    resultCropState.innerText = "—";
+    resultWidth.innerText = "—";
+    resultHeight.innerText = "—";
+    resultWidthNote.innerText = "Masukkan ukuran";
+    resultHeightNote.innerText = "Masukkan ukuran";
+    resultOffsetX.innerText = "—";
+    resultOffsetY.innerText = "—";
+    outputTemplate.textContent = "Masukkan seluruh resolusi untuk melihat hasil.";
+
+    inputBox.style.width = "0px";
+    inputBox.style.height = "0px";
+    cropBox.style.width = "0px";
+    cropBox.style.height = "0px";
+    cropBox.style.left = "0px";
+    cropBox.style.top = "0px";
+    inputLabel.innerText = "";
+    cropLabel.innerText = "";
+}
+
+resetPixelResults();
+
+
+/* =========================================
+   HARDWARE CALCULATOR
+========================================= */
+
+const tabPixel = document.getElementById("tab-pixel");
+const tabHardware = document.getElementById("tab-hardware");
+const pixelCalculator = document.getElementById("pixelCalculator");
+const hardwareCalculator = document.getElementById("hardwareCalculator");
+
+const hardwareLength = document.getElementById("hardwareLength");
+const hardwareHeight = document.getElementById("hardwareHeight");
+const hardwarePitch = document.getElementById("hardwarePitch");
+const hardwareMessage = document.getElementById("hardwareMessage");
+const hardwareResults = document.getElementById("hardwareResults");
+
+const hardwareArea = document.getElementById("hardwareArea");
+const hardwareBoxes = document.getElementById("hardwareBoxes");
+const hardwareResolution = document.getElementById("hardwareResolution");
+const hardwareCabinets = document.getElementById("hardwareCabinets");
+const hardwareLanRuns = document.getElementById("hardwareLanRuns");
+const hardwareLanLoop = document.getElementById("hardwareLanLoop");
+const hardwarePowerRuns = document.getElementById("hardwarePowerRuns");
+const hardwarePowerLoop = document.getElementById("hardwarePowerLoop");
+const hardwareStand = document.getElementById("hardwareStand");
+const hardwareClamps = document.getElementById("hardwareClamps");
+const hardwareBolts = document.getElementById("hardwareBolts");
+const hardwareOutput = document.getElementById("hardwareOutput");
+const hardwareCopyButton = document.getElementById("hardwareCopyButton");
+const hardwareCopyText = document.getElementById("hardwareCopyText");
+
+function setCalculatorTab(tab) {
+    const isPixel = tab === "pixel";
+
+    pixelCalculator.classList.toggle("hidden", !isPixel);
+    hardwareCalculator.classList.toggle("hidden", isPixel);
+    tabPixel.classList.toggle("active", isPixel);
+    tabHardware.classList.toggle("active", !isPixel);
+    tabPixel.setAttribute("aria-selected", String(isPixel));
+    tabHardware.setAttribute("aria-selected", String(!isPixel));
+}
+
+tabPixel.addEventListener("click", () => setCalculatorTab("pixel"));
+tabHardware.addEventListener("click", () => setCalculatorTab("hardware"));
+
+[hardwareLength, hardwareHeight].forEach(input => {
+    input.addEventListener("input", calculateHardware);
+});
+hardwarePitch.addEventListener("change", calculateHardware);
+
+function isHalfMeter(value) {
+    return Number.isFinite(value) && value >= 0.5 && Math.abs(value * 2 - Math.round(value * 2)) < 1e-9;
+}
+
+function calculateHardware() {
+    const length = Number.parseFloat(hardwareLength.value);
+    const height = Number.parseFloat(hardwareHeight.value);
+
+    if (!isHalfMeter(length) || !isHalfMeter(height)) {
+        hardwareResults.classList.add("hidden");
+        hardwareMessage.classList.remove("hidden");
+        hardwareMessage.innerText = "Masukkan panjang dan tinggi LED dalam kelipatan 0,5 meter.";
+        return;
+    }
+
+    const area = length * height;
+    const pitch = hardwarePitch.value;
+    const pixelsPerMeter = pitch === "P2.6" ? 384 : 256;
+    const resolutionWidth = Math.round(length * pixelsPerMeter);
+    const resolutionHeight = Math.round(height * pixelsPerMeter);
+
+    // Cabinet: 500 mm wide, 1000 mm cabinet height prioritized, 500 mm remainder.
+    const cabinetsAcross = Math.round(length / 0.5);
+    const fullMeterRows = Math.floor(height);
+    const halfMeterRemainder = Math.round((height - fullMeterRows) * 2) / 2;
+    const cabinetRows = fullMeterRows + (halfMeterRemainder > 0 ? 1 : 0);
+    const totalCabinets = cabinetsAcross * cabinetRows;
+
+    const lanLimit = pitch === "P2.6" ? 4 : 10;
+    const lanRuns = Math.ceil(area / lanLimit);
+    const powerRuns = Math.ceil(area / 8);
+    const lanLoop = Math.max(0, totalCabinets - lanRuns);
+    const powerLoop = Math.max(0, totalCabinets - powerRuns);
+
+    // Standing levels: 0.5–2.5 m = 1 level, 3–4 m = 2, 4.5–5.5 m = 3, etc.
+    const levels = Math.max(1, Math.floor(height / 1.5));
+    const standsPerLevel = Math.ceil(length);
+    const totalStand = standsPerLevel * levels;
+    const bottomStands = standsPerLevel;
+    const upperStands = Math.max(0, totalStand - bottomStands);
+    const clamps = totalStand;
+    const bolts = bottomStands * 4 + upperStands * 2;
+    const boxes = Math.ceil(area / 3);
+
+    hardwareArea.innerText = area.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+    hardwareBoxes.innerText = boxes;
+    hardwareResolution.innerText = `${resolutionWidth} × ${resolutionHeight}`;
+    hardwareCabinets.innerText = totalCabinets;
+    hardwareLanRuns.innerText = lanRuns;
+    hardwareLanLoop.innerText = lanLoop;
+    hardwarePowerRuns.innerText = powerRuns;
+    hardwarePowerLoop.innerText = powerLoop;
+    hardwareStand.innerText = totalStand;
+    hardwareClamps.innerText = clamps;
+    hardwareBolts.innerText = bolts;
+    hardwareOutput.textContent =
+        `LED: ${length} × ${height} m\n` +
+        `Pitch: ${pitch}\n` +
+        `Total Area: ${area} m²\n` +
+        `Jumlah Box LED: ${boxes} box\n` +
+        `Resolusi LED: ${resolutionWidth} × ${resolutionHeight} px\n` +
+        `Total Cabinets: ${totalCabinets} cabinet\n` +
+        `LAN Runs: ${lanRuns} run\n` +
+        `LAN Loop: ${lanLoop} loop\n` +
+        `Power Legran Runs: ${powerRuns} run\n` +
+        `Power Loop: ${powerLoop} loop\n` +
+        `Standing Bracket: ${totalStand} stand\n` +
+        `Klem: ${clamps} klem\n` +
+        `Baut: ${bolts} baut`;
+
+    hardwareMessage.classList.add("hidden");
+    hardwareResults.classList.remove("hidden");
+}
+
+// Keep the initial state empty until the user enters valid dimensions.
+setCalculatorTab("pixel");
+
+hardwareCopyButton.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(hardwareOutput.textContent);
+        hardwareCopyText.innerText = "Tersalin!";
+        setTimeout(() => { hardwareCopyText.innerText = "Salin Teks"; }, 1500);
+    } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = hardwareOutput.textContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        hardwareCopyText.innerText = "Tersalin!";
+        setTimeout(() => { hardwareCopyText.innerText = "Salin Teks"; }, 1500);
+    }
+});
