@@ -865,3 +865,204 @@ hardwareCopyButton.addEventListener("click", async () => {
         setTimeout(() => { hardwareCopyText.innerText = "Salin Teks"; }, 1500);
     }
 });
+
+
+/* =========================================
+   POWER & GENSET CALCULATOR
+========================================= */
+
+const tabPower = document.getElementById("tab-power");
+const powerCalculator = document.getElementById("powerCalculator");
+const powerModeDimensions = document.getElementById("powerModeDimensions");
+const powerModeArea = document.getElementById("powerModeArea");
+const powerDimensionInputs = document.getElementById("powerDimensionInputs");
+const powerAreaInput = document.getElementById("powerAreaInput");
+const powerLength = document.getElementById("powerLength");
+const powerHeight = document.getElementById("powerHeight");
+const powerTotalArea = document.getElementById("powerTotalArea");
+const powerLedType = document.getElementById("powerLedType");
+const powerLedTypeArea = document.getElementById("powerLedTypeArea");
+const powerMessage = document.getElementById("powerMessage");
+const powerResults = document.getElementById("powerResults");
+const powerAreaResult = document.getElementById("powerAreaResult");
+const powerTypeResult = document.getElementById("powerTypeResult");
+const powerWattResult = document.getElementById("powerWattResult");
+const powerKvaResult = document.getElementById("powerKvaResult");
+const powerGensetResult = document.getElementById("powerGensetResult");
+const powerCabinetInfo = document.getElementById("powerCabinetInfo");
+const powerOutput = document.getElementById("powerOutput");
+const powerCopyButton = document.getElementById("powerCopyButton");
+const powerCopyText = document.getElementById("powerCopyText");
+
+const powerLedSpecs = {
+    "qiangli-saga-p39": {
+        name: "Qiangli Saga P3.9",
+        short: 180,
+        long: 360,
+        perM2: 720
+    },
+    "qiangli-new-lite-p39": {
+        name: "Qiangli New Lite P3.9",
+        short: 180,
+        long: 360,
+        perM2: 720
+    },
+    "qiangli-saga-p26": {
+        name: "Qiangli Saga P2.6",
+        short: 144,
+        long: 288,
+        perM2: 576
+    },
+    "qiangli-new-lite-p26": {
+        name: "Qiangli New Lite P2.6",
+        short: 144,
+        long: 288,
+        perM2: 576
+    },
+    "lampro-maven-p39": {
+        name: "Lampro Maven P3.9",
+        short: 157,
+        long: 315,
+        perM2: 630
+    },
+    "lampro-lrs-p26": {
+        name: "Lampro LRS P2.6",
+        short: 140,
+        long: 280,
+        perM2: 560
+    }
+};
+
+let powerInputMode = "dimensions";
+
+function setPowerInputMode(mode) {
+    powerInputMode = mode;
+    const dimensions = mode === "dimensions";
+    powerDimensionInputs.classList.toggle("hidden", !dimensions);
+    powerAreaInput.classList.toggle("hidden", dimensions);
+    powerModeDimensions.classList.toggle("active", dimensions);
+    powerModeArea.classList.toggle("active", !dimensions);
+    calculatePower();
+}
+
+powerModeDimensions.addEventListener("click", () => setPowerInputMode("dimensions"));
+powerModeArea.addEventListener("click", () => setPowerInputMode("area"));
+[powerLength, powerHeight, powerTotalArea].forEach(input => input.addEventListener("input", calculatePower));
+[powerLedType, powerLedTypeArea].forEach(select => select.addEventListener("change", calculatePower));
+
+tabPower.addEventListener("click", () => setCalculatorTab("power"));
+
+// Extend the existing tab function without changing the previous calculator logic.
+const originalSetCalculatorTab = setCalculatorTab;
+setCalculatorTab = function(tab) {
+    originalSetCalculatorTab(tab === "power" ? "pixel" : tab);
+    const isPower = tab === "power";
+    if (isPower) {
+        pixelCalculator.classList.add("hidden");
+        hardwareCalculator.classList.add("hidden");
+    }
+    powerCalculator.classList.toggle("hidden", !isPower);
+    tabPixel.classList.toggle("active", tab === "pixel");
+    tabHardware.classList.toggle("active", tab === "hardware");
+    tabPower.classList.toggle("active", isPower);
+    tabPixel.setAttribute("aria-selected", String(tab === "pixel"));
+    tabHardware.setAttribute("aria-selected", String(tab === "hardware"));
+    tabPower.setAttribute("aria-selected", String(isPower));
+};
+
+function formatPowerNumber(value, digits = 2) {
+    return value.toLocaleString("id-ID", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: digits
+    });
+}
+
+function calculatePower() {
+    const typeKey = powerInputMode === "dimensions" ? powerLedType.value : powerLedTypeArea.value;
+    const spec = powerLedSpecs[typeKey];
+    let area = 0;
+    let totalWatt = 0;
+    let cabinetInfo = "";
+
+    if (powerInputMode === "dimensions") {
+        const length = Number.parseFloat(powerLength.value);
+        const height = Number.parseFloat(powerHeight.value);
+
+        if (!isHalfMeter(length) || !isHalfMeter(height)) {
+            powerResults.classList.add("hidden");
+            powerMessage.classList.remove("hidden");
+            powerMessage.innerText = "Masukkan panjang dan tinggi LED dalam kelipatan 0,5 meter.";
+            return;
+        }
+
+        area = length * height;
+
+        // Same cabinet composition logic as the Hardware Calculator:
+        // 500x1000 mm cabinets are prioritized, with 500x500 mm for the remainder.
+        const cabinetsAcross = Math.round(length / 0.5);
+        const fullMeterRows = Math.floor(height);
+        const halfMeterRemainder = Math.round((height - fullMeterRows) * 2) / 2;
+        const longCabinets = cabinetsAcross * fullMeterRows;
+        const shortCabinets = halfMeterRemainder > 0 ? cabinetsAcross : 0;
+        const totalCabinets = longCabinets + shortCabinets;
+
+        totalWatt = longCabinets * spec.long + shortCabinets * spec.short;
+        cabinetInfo = `Komposisi cabinet: ${totalCabinets} cabinet (500×1000 mm diprioritaskan)`;
+    } else {
+        area = Number.parseFloat(powerTotalArea.value);
+
+        if (!Number.isFinite(area) || area <= 0) {
+            powerResults.classList.add("hidden");
+            powerMessage.classList.remove("hidden");
+            powerMessage.innerText = "Masukkan total luas LED yang lebih besar dari 0 m².";
+            return;
+        }
+
+        // Area-only input uses the maximum specified load per square meter.
+        totalWatt = area * spec.perM2;
+        cabinetInfo = "Mode total luas: perhitungan daya menggunakan beban maksimal per m².";
+    }
+
+    const kva = totalWatt / (1000 * 0.8);
+    const gensetKva = kva * 1.2;
+
+    powerAreaResult.innerText = formatPowerNumber(area);
+    powerTypeResult.innerText = spec.name;
+    powerWattResult.innerText = formatPowerNumber(totalWatt);
+    powerKvaResult.innerText = formatPowerNumber(kva);
+    powerGensetResult.innerText = formatPowerNumber(gensetKva);
+    powerCabinetInfo.innerText = cabinetInfo;
+    powerCabinetInfo.classList.remove("hidden");
+
+    powerOutput.textContent =
+        `LED: ${spec.name}\n` +
+        `Total Area: ${formatPowerNumber(area)} m²\n` +
+        `Total Daya Maksimal: ${formatPowerNumber(totalWatt)} Watt\n` +
+        `Power Factor: 0.8\n` +
+        `Daya: ${formatPowerNumber(kva)} kVA\n` +
+        `Safety Margin: 20%\n` +
+        `Kebutuhan Genset: ${formatPowerNumber(gensetKva)} kVA`;
+
+    powerMessage.classList.add("hidden");
+    powerResults.classList.remove("hidden");
+}
+
+powerCopyButton.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(powerOutput.textContent);
+        powerCopyText.innerText = "Tersalin!";
+        setTimeout(() => { powerCopyText.innerText = "Salin Teks"; }, 1500);
+    } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = powerOutput.textContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        powerCopyText.innerText = "Tersalin!";
+        setTimeout(() => { powerCopyText.innerText = "Salin Teks"; }, 1500);
+    }
+});
+
+setPowerInputMode("dimensions");
+setCalculatorTab("pixel");

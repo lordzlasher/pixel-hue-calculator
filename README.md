@@ -1,334 +1,198 @@
-# LED Screen Rental Calculator
+# 🎯 LED Screen Rental Calculator
 
-Web-based calculator untuk membantu menghitung kebutuhan **pixel resolution** dan **hardware LED screen rental** berdasarkan ukuran LED screen dan pixel pitch.
+Web-based calculator untuk membantu kebutuhan **LED screen rental**, mulai dari perhitungan pixel resolution, kebutuhan hardware, hingga kebutuhan daya dan genset.
 
-Program ini terdiri dari dua modul utama:
-
-* **Pixel Calculator**
-* **LED Screen Rental Hardware Calculator**
-
-Dibuat menggunakan HTML, CSS, dan JavaScript tanpa backend.
+Aplikasi berjalan sepenuhnya di browser menggunakan **HTML, CSS, dan JavaScript**.
 
 ---
 
 ## ✨ Features
 
-### 1. Pixel Calculator
+### 🖥️ 1. Pixel Calculator
 
-Pixel Calculator digunakan untuk menghitung kebutuhan resolusi LED screen berdasarkan:
+Digunakan untuk menghitung dan menyesuaikan resolusi LED berdasarkan source resolution dan target resolution.
 
-* Source Resolution
-* Target LED Resolution
-* Aspect Ratio
-* Mode tampilan
+**Mode yang tersedia:**
 
-Mode yang tersedia:
+* 🔲 **Fit**
+* 🖼️ **Fill**
+* ↔️ **Stretch**
+* 🎯 **Original**
 
-* **Fit** — mempertahankan aspect ratio dan menyesuaikan gambar ke area target.
-* **Fill** — mempertahankan aspect ratio dan melakukan crop pada bagian yang tidak diperlukan.
-* **Stretch** — menyesuaikan gambar secara penuh ke target resolution.
-* **Original** — menggunakan ukuran source resolution tanpa perubahan.
+**Fitur tambahan:**
 
-Calculator juga menyediakan:
-
-* Hasil resolusi
-* Informasi crop
-* Preview
-* Full text output
-* Tombol **Copy**
+* ✂️ Perhitungan crop
+* 👁️ Live preview
+* 📐 Hasil resolusi
+* 📋 Copy hasil perhitungan
 
 ---
 
-# 2. LED Screen Rental Hardware Calculator
+### 🧰 2. LED Screen Rental Hardware Calculator
 
-Hardware Calculator digunakan untuk memperkirakan kebutuhan hardware berdasarkan ukuran LED screen dalam meter.
+Menghitung kebutuhan hardware berdasarkan ukuran LED screen dan pixel pitch.
 
-Input yang tersedia:
+#### 📏 Pixel Pitch
 
-* **Panjang LED**
-* **Tinggi LED**
-* **Pixel Pitch**
+* 🔹 **P3.9**
+* 🔹 **P2.6**
 
-Pixel pitch yang tersedia:
+#### 🧱 Cabinet
 
-* **P3.9**
-* **P2.6**
+Sistem menggunakan dua ukuran cabinet:
 
-Ukuran LED harus menggunakan kelipatan **0,5 meter**.
+* 📦 500 × 500 mm
+* 📦 500 × 1000 mm
 
-Contoh:
+Komposisi cabinet dihitung otomatis dengan memprioritaskan **500 × 1000 mm**, kemudian menggunakan 500 × 500 mm untuk bagian yang tersisa.
+
+#### 📊 Perhitungan Hardware
+
+Modul menghitung:
+
+* 📐 Total Area
+* 🖥️ Resolusi LED
+* 📦 Jumlah Box LED
+* 🧱 Total Cabinet
+* 🌐 LAN Runs
+* 🔄 LAN Loop
+* ⚡ Power Legran Runs
+* 🔄 Power Loop
+* 🏗️ Standing Bracket
+* 🔩 Klem
+* 🔧 Baut
+
+#### 🖥️ Resolusi LED
+
+| Pixel Pitch | Resolusi per Meter |
+| ----------- | -----------------: |
+| 🔵 P3.9     |           256 px/m |
+| 🟢 P2.6     |           384 px/m |
+
+#### 📦 Box LED
+
+Setiap box LED dihitung berdasarkan:
 
 ```text
-4 × 3 m
-4 × 3.5 m
-10 × 3 m
-10 × 4 m
+1 Box = 3 m²
 ```
 
 ---
 
-## 📐 Perhitungan Resolusi LED
+### ⚡ 3. LED Power & Genset Calculator
 
-Resolusi otomatis dihitung berdasarkan pixel pitch.
+Digunakan untuk menghitung kebutuhan **daya maksimal LED** dan estimasi kapasitas **genset**.
 
-| Pixel Pitch | Pixel per Meter |
-| ----------- | --------------: |
-| P3.9        |        256 px/m |
-| P2.6        |        384 px/m |
+#### 📐 Input Ukuran
+
+Input dapat dilakukan melalui:
+
+* 📏 Panjang × tinggi LED
+* 📐 Total luas LED
+
+#### 🖥️ Jenis LED
+
+Pilihan LED yang tersedia:
+
+* 🔵 Qiangli Saga P3.9
+* 🔵 Qiangli New Lite P3.9
+* 🟢 Qiangli Saga P2.6
+* 🟢 Qiangli New Lite P2.6
+* 🟠 Lampro Maven P3.9
+* 🟠 Lampro LRS P2.6
+
+Perhitungan cabinet menggunakan sistem yang sama dengan Hardware Calculator, yaitu memprioritaskan **500 × 1000 mm**.
+
+---
+
+## ⚡ Power Calculation
+
+Perhitungan daya menggunakan **maximum power** dari masing-masing jenis LED.
+
+Untuk LED dengan rentang konsumsi daya, sistem menggunakan nilai tertinggi.
+
+### 🔌 Power Factor
+
+Konversi Watt ke kVA menggunakan:
+
+```text
+PF = 0.8
+```
 
 Formula:
 
 ```text
-Resolution Width  = Panjang × Pixel per Meter
-Resolution Height = Tinggi × Pixel per Meter
+kVA = Watt / (1000 × 0.8)
 ```
 
-### Contoh P3.9
+### 🛡️ Safety Margin
 
-LED:
+Setelah mendapatkan kebutuhan kVA, sistem menambahkan:
 
 ```text
-10 × 3 meter
+Safety Margin = 20%
 ```
 
-Perhitungan:
+Formula kebutuhan genset:
 
 ```text
-10 × 256 = 2560 px
-3 × 256  = 768 px
-```
-
-Hasil:
-
-```text
-2560 × 768 px
-```
-
-### Contoh P2.6
-
-LED:
-
-```text
-10 × 3 meter
-```
-
-Perhitungan:
-
-```text
-10 × 384 = 3840 px
-3 × 384  = 1152 px
-```
-
-Hasil:
-
-```text
-3840 × 1152 px
+Genset kVA = kVA × 1.20
 ```
 
 ---
 
-# 🧱 Cabinet Calculation
+## 📊 LED Power Specification
 
-Program menggunakan cabinet:
+| LED Screen               | 500 × 500 mm | 500 × 1000 mm | Maximum Load |
+| ------------------------ | -----------: | ------------: | -----------: |
+| 🔵 Qiangli Saga P3.9     |        180 W |         360 W |     720 W/m² |
+| 🔵 Qiangli New Lite P3.9 |        180 W |         360 W |     720 W/m² |
+| 🟢 Qiangli Saga P2.6     |        144 W |         288 W |     576 W/m² |
+| 🟢 Qiangli New Lite P2.6 |        144 W |         288 W |     576 W/m² |
+| 🟠 Lampro Maven P3.9     |    150–157 W |     300–315 W |     630 W/m² |
+| 🟠 Lampro LRS P2.6       |    130–140 W |     260–280 W |     560 W/m² |
 
-* Width: **500 mm**
-* Height: **500 mm**
-* Height: **1000 mm**
-
-Cabinet tidak diputar/rotasi.
-
-Sistem akan memprioritaskan penggunaan cabinet **500 × 1000 mm**, kemudian menggunakan cabinet **500 × 500 mm** untuk bagian yang tersisa.
-
-Jumlah cabinet yang ditampilkan adalah **total cabinet**, bukan breakdown berdasarkan jenis cabinet.
-
-### Contoh
-
-LED:
-
-```text
-4 × 3.5 meter
-```
-
-Lebar:
-
-```text
-4 / 0.5 = 8 cabinet
-```
-
-Tinggi:
-
-```text
-1 m + 1 m + 1 m + 0.5 m
-= 4 cabinet
-```
-
-Total:
-
-```text
-8 × 4 = 32 cabinet
-```
-
-Hasil:
-
-```text
-Total Cabinets: 32
-```
+> ⚠️ Untuk perhitungan **maximum power**, sistem menggunakan nilai tertinggi dari setiap range.
 
 ---
 
-# 🌐 LAN Runs
+## 🧮 Hardware Calculation Rules
 
-Perhitungan LAN menggunakan batas berdasarkan **total area**.
+### 🌐 LAN
 
-### P3.9
-
-Maximum:
-
-```text
-10 m² per LAN run
-```
-
-Formula:
+**P3.9**
 
 ```text
 LAN Runs = ceil(Total Area / 10)
 ```
 
-### P2.6
-
-Maximum:
-
-```text
-4 m² per LAN run
-```
-
-Formula:
+**P2.6**
 
 ```text
 LAN Runs = ceil(Total Area / 4)
 ```
 
-### Contoh
-
-LED:
+### ⚡ Power Legran
 
 ```text
-4 × 3 m
+Power Runs = ceil(Total Area / 8)
 ```
 
-Total area:
-
-```text
-12 m²
-```
-
-Untuk P3.9:
-
-```text
-ceil(12 / 10)
-= 2 LAN Runs
-```
-
----
-
-# 🔌 Power Legran
-
-Power Legran menggunakan batas berdasarkan total area.
-
-Maximum:
-
-```text
-8 m² per Power Run
-```
-
-Formula:
-
-```text
-Power Legran Runs = ceil(Total Area / 8)
-```
-
-### Contoh
-
-LED:
-
-```text
-4 × 3 m
-```
-
-Total area:
-
-```text
-12 m²
-```
-
-Maka:
-
-```text
-ceil(12 / 8)
-= 2 Power Legran Runs
-```
-
----
-
-# 🔄 Loop Calculation
-
-Program juga menghitung kebutuhan loop.
-
-### Power Loop
-
-```text
-Power Loop = Total Cabinets - Power Legran Runs
-```
-
-### LAN Loop
+### 🔄 Loop
 
 ```text
 LAN Loop = Total Cabinets - LAN Runs
+
+Power Loop = Total Cabinets - Power Runs
 ```
 
----
+### 🏗️ Standing Bracket
 
-# 🏗️ Standing Bracket
+Standing bracket menggunakan tinggi **1,5 meter per level**.
 
-Standing bracket dihitung berdasarkan:
+Jumlah level dihitung berdasarkan tinggi LED dan jumlah standing horizontal berdasarkan panjang LED.
 
-* Panjang LED
-* Tinggi LED
-* Tinggi bracket: **1,5 meter**
-
-Jumlah standing horizontal per level:
-
-```text
-Standing per Level = ceil(Panjang LED)
-```
-
-Jumlah level:
-
-```text
-Levels = max(1, floor(Tinggi LED / 1.5))
-```
-
-Contoh:
-
-| Tinggi LED | Level |
-| ---------- | ----: |
-| 0.5–2.5 m  |     1 |
-| 3–4 m      |     2 |
-| 4.5–5.5 m  |     3 |
-| 6–7 m      |     4 |
-| 7.5–8.5 m  |     5 |
-
-Total standing bracket:
-
-```text
-Total Standing = Standing per Level × Number of Levels
-```
-
-Program hanya menampilkan **total standing bracket**.
-
----
-
-# 🔩 Klem & Baut
+### 🔩 Klem & Baut
 
 Setiap standing bracket menggunakan:
 
@@ -336,290 +200,94 @@ Setiap standing bracket menggunakan:
 1 Klem
 ```
 
-Untuk baut:
+Baut:
 
-### Bottom Level
-
-Setiap stand menggunakan:
-
-```text
-4 baut
-```
-
-### Level di atasnya
-
-Setiap stand menggunakan:
-
-```text
-2 baut
-```
-
-Sehingga:
-
-```text
-Klem = Total Standing
-```
-
-dan:
-
-```text
-Baut =
-(Bottom Stand × 4)
-+
-(Upper Stand × 2)
-```
-
-Program menampilkan hasil akhir:
-
-* Klem
-* Baut
-
-tanpa menampilkan breakdown bottom/upper level.
+* 🔩 Bottom level: 4 baut per stand
+* 🔩 Level di atasnya: 2 baut per stand
 
 ---
 
-# 📦 Box LED
-
-Program menghitung kebutuhan box LED berdasarkan luas area.
-
-Setiap box dihitung berdasarkan:
-
-```text
-3 m²
-```
-
-Formula:
-
-```text
-Jumlah Box = ceil(Total Area / 3)
-```
-
-Contoh:
-
-```text
-LED = 10 × 3 m
-Area = 30 m²
-```
-
-Maka:
-
-```text
-ceil(30 / 3)
-= 10 box
-```
-
----
-
-# 📊 Hardware Calculator Output
-
-Setelah ukuran LED dimasukkan, program menampilkan:
-
-* Total Area
-* Jumlah Box LED
-* Resolusi LED
-* Total Cabinets
-* LAN Runs
-* LAN Loop
-* Power Legran Runs
-* Power Loop
-* Standing Bracket
-* Klem
-* Baut
-
-Tersedia juga bagian:
-
-**Ringkasan Parameter Hardware**
-
-yang dapat disalin menggunakan tombol:
-
-**Salin Teks**
-
----
-
-# 🧮 Contoh Perhitungan
-
-## Example 1 — P3.9
-
-Input:
-
-```text
-Panjang : 10 m
-Tinggi  : 3 m
-Pitch   : P3.9
-```
-
-Hasil utama:
-
-```text
-Total Area       : 30 m²
-Jumlah Box LED   : 10 box
-Resolusi LED     : 2560 × 768 px
-Total Cabinets   : 60 cabinet
-LAN Runs         : 3 run
-LAN Loop         : 57 loop
-Power Legran     : 4 run
-Power Loop       : 56 loop
-Standing Bracket : 30 stand
-Klem             : 30 klem
-Baut             : 120 baut
-```
-
----
-
-## Example 2 — P2.6
-
-Input:
-
-```text
-Panjang : 10 m
-Tinggi  : 3 m
-Pitch   : P2.6
-```
-
-Resolusi:
-
-```text
-3840 × 1152 px
-```
-
-Perhitungan LAN menggunakan batas:
-
-```text
-4 m² per LAN run
-```
-
-Sehingga:
-
-```text
-30 / 4 = 7.5
-ceil(7.5) = 8 LAN Runs
-```
-
----
-
-# 🖥️ User Interface
-
-Program menggunakan tampilan dark theme dengan dua module selector:
-
-```text
-Pixel Calculator
-Hardware Calculator
-```
-
-Module dapat digunakan secara terpisah tanpa menggantikan fungsi calculator lainnya.
-
----
-
-# 🛠️ Technology
-
-Project ini dibuat menggunakan:
-
-* HTML5
-* CSS3
-* JavaScript
-* Tailwind CSS CDN
-
-Tidak membutuhkan:
-
-* Database
-* Backend
-* Server-side processing
-* API
-
-Semua kalkulasi dilakukan langsung di browser.
-
----
-
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```text
 led-screen-rental-calculator/
 │
-├── index.html
+├── 📄 index.html
 │
-├── css/
-│   └── style.css
+├── 📂 css/
+│   └── 🎨 style.css
 │
-└── js/
-    └── app.js
+└── 📂 js/
+    └── ⚙️ app.js
 ```
 
 ---
 
-# 🚀 How to Run
+## 🛠️ Technology
 
-Karena project ini merupakan aplikasi frontend sederhana, project dapat dijalankan langsung melalui browser.
+* 🌐 HTML5
+* 🎨 CSS3
+* ⚙️ JavaScript
+* 💨 Tailwind CSS CDN
 
-### Cara 1 — Open langsung
+Tidak membutuhkan backend atau database.
 
-Buka:
+---
+
+## 🚀 How to Run
+
+Buka file:
 
 ```text
 index.html
 ```
 
-menggunakan browser.
+langsung menggunakan browser.
 
-### Cara 2 — Local Server
-
-Jika menggunakan VS Code, project dapat dijalankan menggunakan extension seperti **Live Server**.
-
-Kemudian buka project melalui browser.
+Atau gunakan local development server seperti **Live Server** pada VS Code.
 
 ---
 
-# 📌 Input Rules
+## 🧩 Modules
 
-Hardware Calculator menggunakan aturan berikut:
-
-* Panjang LED menggunakan kelipatan 0,5 meter.
-* Tinggi LED menggunakan kelipatan 0,5 meter.
-* Pixel pitch hanya tersedia P3.9 dan P2.6.
-* Cabinet width adalah 500 mm.
-* Cabinet tidak menggunakan rotasi.
-* Cabinet 500 × 1000 mm diprioritaskan sebelum cabinet 500 × 500 mm.
-* Perhitungan LAN berdasarkan luas area.
-* Perhitungan Power Legran berdasarkan luas area.
-* Perhitungan Box LED berdasarkan 3 m² per box.
-
----
-
-# 📋 Summary
-
-Program ini dirancang sebagai tool praktis untuk membantu estimasi kebutuhan LED screen rental, mulai dari:
+Aplikasi memiliki tiga modul utama:
 
 ```text
-Ukuran LED
-     ↓
-Total Area
-     ↓
-Resolusi LED
-     ↓
-Jumlah Cabinet
-     ↓
-Box LED
-     ↓
-LAN Runs & Loop
-     ↓
-Power Runs & Loop
-     ↓
-Standing Bracket
-     ↓
-Klem & Baut
+🖥️ Pixel Calculator
+        │
+        ├── 📐 Resolution
+        ├── ✂️ Crop
+        └── 👁️ Preview
+
+🧰 Hardware Calculator
+        │
+        ├── 🧱 Cabinet
+        ├── 🌐 LAN
+        ├── ⚡ Power
+        ├── 🏗️ Standing
+        └── 🔩 Accessories
+
+⚡ Power & Genset Calculator
+        │
+        ├── 📐 Total Area
+        ├── ⚡ Maximum Power
+        ├── 🔌 kVA
+        └── 🛡️ Genset + 20% Safety Margin
 ```
 
-Dengan dua calculator dalam satu aplikasi, program dapat digunakan untuk kebutuhan **perhitungan resolusi LED** maupun **estimasi hardware LED screen rental** secara cepat langsung dari browser.
+---
+
+## 📋 Summary
+
+**LED Screen Rental Calculator** menyediakan satu aplikasi untuk membantu kebutuhan:
+
+* 🖥️ **Pixel & Resolution Calculation**
+* 🧰 **LED Rental Hardware Calculation**
+* ⚡ **Power Consumption Calculation**
+* 🔌 **Genset Capacity Estimation**
+
+Semua perhitungan dilakukan secara langsung di browser tanpa membutuhkan backend.
 
 ---
 
 ## 📄 License
-
-Tambahkan license sesuai kebutuhan project Anda.
-
-Contoh:
-
-```text
-MIT License
-```
-
-Jika repository ini digunakan untuk kebutuhan komersial, pastikan license dan hak penggunaan source code sudah disesuaikan dengan kebutuhan project.

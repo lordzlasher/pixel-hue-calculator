@@ -17,16 +17,6 @@
 
     <div class="calculator-shell w-full max-w-6xl">
 
-        <!-- NAVIGATION HOVER -->
-        <!-- <nav class="app-tabs" aria-label="Calculator navigation">
-       <button type="button" id="tab-pixel" class="calculator-tab active" role="tab" aria-selected="true">
-                Pixel Calculator
-            </button>
-         <button type="button" id="tab-hardware" class="calculator-tab" role="tab" aria-selected="false">
-                Hardware Calculator
-            </button>
-    </nav> -->
-
         <!-- CALCULATOR TABS -->
         <div class="calculator-tabs" role="tablist" aria-label="Calculator selection">
             <button type="button" id="tab-pixel" class="calculator-tab active" role="tab" aria-selected="true">
@@ -34,6 +24,9 @@
             </button>
             <button type="button" id="tab-hardware" class="calculator-tab" role="tab" aria-selected="false">
                 Hardware Calculator
+            </button>
+            <button type="button" id="tab-power" class="calculator-tab" role="tab" aria-selected="false">
+                Power & Genset Calculator
             </button>
         </div>
 
@@ -602,6 +595,117 @@
                         </button>
                     </div>
                     <pre id="hardwareOutput" class="output-template"></pre>
+                </details>
+            </div>
+        </section>
+
+        <!-- =========================================
+             POWER & GENSET CALCULATOR
+        ========================================== -->
+        <section id="powerCalculator" class="calculator-panel power-panel hidden">
+            <header class="mb-6 border-b border-slate-800 pb-4">
+                <h1 class="text-2xl font-bold tracking-tight text-emerald-400">
+                    LED Power & Genset Calculator
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                    Hitung kebutuhan daya maksimal LED dan kebutuhan genset dengan safety margin 20%.
+                </p>
+            </header>
+
+            <div class="power-input-mode mb-5" role="group" aria-label="Metode input ukuran LED">
+                <button type="button" id="powerModeDimensions" class="power-mode-btn active">Panjang × Tinggi</button>
+                <button type="button" id="powerModeArea" class="power-mode-btn">Total Luas</button>
+            </div>
+
+            <div id="powerDimensionInputs" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="space-y-2">
+                    <label for="powerLength" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Panjang LED (meter)</label>
+                    <input type="number" id="powerLength" class="resolution-input" min="0.5" max="100" step="0.5" placeholder="Contoh: 10">
+                </div>
+                <div class="space-y-2">
+                    <label for="powerHeight" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Tinggi LED (meter)</label>
+                    <input type="number" id="powerHeight" class="resolution-input" min="0.5" max="50" step="0.5" placeholder="Contoh: 3">
+                </div>
+                <div class="space-y-2">
+                    <label for="powerLedType" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Jenis LED</label>
+                    <select id="powerLedType" class="resolution-input hardware-select">
+                        <option value="qiangli-saga-p39">Qiangli Saga P3.9</option>
+                        <option value="qiangli-new-lite-p39">Qiangli New Lite P3.9</option>
+                        <option value="qiangli-saga-p26">Qiangli Saga P2.6</option>
+                        <option value="qiangli-new-lite-p26">Qiangli New Lite P2.6</option>
+                        <option value="lampro-maven-p39">Lampro Maven P3.9</option>
+                        <option value="lampro-lrs-p26">Lampro LRS P2.6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="powerAreaInput" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="space-y-2">
+                    <label for="powerTotalArea" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Total Luas LED (m²)</label>
+                    <input type="number" id="powerTotalArea" class="resolution-input" min="0.25" max="5000" step="0.25" placeholder="Contoh: 30">
+                </div>
+                <div class="space-y-2">
+                    <label for="powerLedTypeArea" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Jenis LED</label>
+                    <select id="powerLedTypeArea" class="resolution-input hardware-select">
+                        <option value="qiangli-saga-p39">Qiangli Saga P3.9</option>
+                        <option value="qiangli-new-lite-p39">Qiangli New Lite P3.9</option>
+                        <option value="qiangli-saga-p26">Qiangli Saga P2.6</option>
+                        <option value="qiangli-new-lite-p26">Qiangli New Lite P2.6</option>
+                        <option value="lampro-maven-p39">Lampro Maven P3.9</option>
+                        <option value="lampro-lrs-p26">Lampro LRS P2.6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="powerMessage" class="hardware-message mb-6">Masukkan ukuran LED dan pilih jenis LED untuk melihat hasil.</div>
+
+            <div id="powerResults" class="hidden">
+                <div class="hardware-area-card mb-3">
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Total Area</span>
+                        <strong id="powerAreaResult">—</strong>
+                        <span>m²</span>
+                    </div>
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Jenis LED</span>
+                        <strong id="powerTypeResult" class="power-type-result">—</strong>
+                        <span>LED</span>
+                    </div>
+                    <div class="hardware-area-item">
+                        <span class="hardware-result-label">Total Daya Maksimal</span>
+                        <strong id="powerWattResult">—</strong>
+                        <span>Watt</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Daya Maksimal</span>
+                        <strong id="powerKvaResult">—</strong>
+                        <span>kVA @ PF 0.8</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Safety Margin</span>
+                        <strong>20%</strong>
+                        <span>faktor keamanan</span>
+                    </div>
+                    <div class="hardware-result-card">
+                        <span class="hardware-result-label">Kebutuhan Genset</span>
+                        <strong id="powerGensetResult">—</strong>
+                        <span>kVA</span>
+                    </div>
+                </div>
+
+                <div id="powerCabinetInfo" class="hardware-message mb-4 hidden"></div>
+
+                <details class="group mt-4">
+                    <summary class="details-summary">▸ Ringkasan Power & Genset</summary>
+                    <div class="hardware-summary-actions">
+                        <button type="button" id="powerCopyButton" class="copy-button">
+                            <span id="powerCopyText">Salin Teks</span>
+                        </button>
+                    </div>
+                    <pre id="powerOutput" class="output-template"></pre>
                 </details>
             </div>
         </section>

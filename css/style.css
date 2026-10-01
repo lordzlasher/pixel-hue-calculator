@@ -30,56 +30,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 
-
-/* =========================================
-   APP TABS
-========================================= */
-
-.app-tabs {
-    position: fixed;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.375rem;
-
-    background-color: #020617;
-    border: 1px solid #1e293b;
-    border-radius: 0.875rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-}
-
-.app-tab {
-    padding: 0.625rem 1rem;
-    border-radius: 0.625rem;
-
-    color: #64748b;
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-
-    transition:
-        background-color 150ms ease,
-        color 150ms ease;
-}
-
-.app-tab:hover {
-    color: #cbd5e1;
-}
-
-.app-tab.active {
-    background-color: #10b981;
-    color: #020617;
-}
-
-.calculator-module {
-    margin-top: 4.5rem;
-}
-
 /* =========================================
    RESOLUTION INPUT
 ========================================= */
@@ -698,5 +648,59 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .hardware-result-card strong {
         font-size: 1.5rem;
+    }
+}
+
+
+/* =========================================
+   POWER & GENSET CALCULATOR
+========================================= */
+
+.power-input-mode {
+    display: inline-flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background-color: #020617;
+    border: 1px solid #1e293b;
+    border-radius: 0.75rem;
+}
+
+.power-mode-btn {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.power-mode-btn:hover {
+    color: #f8fafc;
+}
+
+.power-mode-btn.active {
+    background-color: #10b981;
+    color: #020617;
+}
+
+.power-type-result {
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    line-height: 1.35rem !important;
+}
+
+#powerCabinetInfo {
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 640px) {
+    .power-input-mode {
+        display: flex;
+        width: 100%;
+    }
+
+    .power-mode-btn {
+        flex: 1;
     }
 }
