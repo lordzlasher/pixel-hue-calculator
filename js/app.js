@@ -1066,3 +1066,152 @@ powerCopyButton.addEventListener("click", async () => {
 
 setPowerInputMode("dimensions");
 setCalculatorTab("pixel");
+
+
+/* =========================================
+   STAGE / RISER CALCULATOR
+========================================= */
+
+const tabStage = document.getElementById("tab-stage");
+const stageCalculator = document.getElementById("stageCalculator");
+const stageModuleCount = document.getElementById("stageModuleCount");
+const stageMessage = document.getElementById("stageMessage");
+const stageResults = document.getElementById("stageResults");
+const stageDimensionResult = document.getElementById("stageDimensionResult");
+const stagePreviewDimension = document.getElementById("stagePreviewDimension");
+const stageModuleResult = document.getElementById("stageModuleResult");
+const stageBraceResult = document.getElementById("stageBraceResult");
+const stageStandResult = document.getElementById("stageStandResult");
+const stageBaseResult = document.getElementById("stageBaseResult");
+const stagePreview = document.getElementById("stagePreview");
+const stageOutput = document.getElementById("stageOutput");
+const stageCopyButton = document.getElementById("stageCopyButton");
+const stageCopyText = document.getElementById("stageCopyText");
+
+function calculateStage() {
+    const modules = Number.parseInt(stageModuleCount.value, 10);
+
+    if (!Number.isInteger(modules) || modules < 1) {
+        stageResults.classList.add("hidden");
+        stageMessage.classList.remove("hidden");
+        stageMessage.innerText = "Masukkan jumlah modul stage minimal 1 modul.";
+        stagePreviewDimension.innerText = "—";
+        stagePreview.innerHTML = '<div class="stage-preview-empty">Masukkan jumlah modul untuk menampilkan preview.</div>';
+        return;
+    }
+
+    const lengthCm = modules * 122;
+    const widthCm = 122;
+    const stageBraces = (modules * 3) + 1;
+    const stageStands = (modules * 2) + 2;
+    const adjustableBases = stageStands;
+
+    stageDimensionResult.innerText = `${lengthCm} × ${widthCm} cm`;
+    stagePreviewDimension.innerText = `${lengthCm} × ${widthCm} cm`;
+    stageModuleResult.innerText = modules;
+    stageBraceResult.innerText = stageBraces;
+    stageStandResult.innerText = stageStands;
+    stageBaseResult.innerText = adjustableBases;
+
+    stageOutput.textContent =
+        `Jumlah Modul: ${modules} modul\n` +
+        `Ukuran Riser: ${lengthCm} × ${widthCm} cm\n` +
+        `Dek Panggung (Stage Module): ${modules} pcs\n` +
+        `Palang Samping (Stage Brace): ${stageBraces} pcs\n` +
+        `Kaki Panggung (Stage Stand): ${stageStands} pcs\n` +
+        `Tatakan Dasar (Adjustable Base): ${adjustableBases} pcs`;
+
+    renderStagePreview(modules);
+    stageMessage.classList.add("hidden");
+    stageResults.classList.remove("hidden");
+}
+
+function renderStagePreview(modules) {
+    const visibleModules = Math.min(modules, 18);
+    const previewScaleNote = modules > visibleModules
+        ? `<div class="stage-preview-overflow">Preview menampilkan ${visibleModules} dari ${modules} modul agar tetap proporsional.</div>`
+        : "";
+
+    let decks = "";
+    let supportPoints = "";
+    let braces = "";
+
+    for (let i = 0; i < visibleModules; i += 1) {
+        decks += `<div class="stage-deck-module"><span>${i + 1}</span></div>`;
+        braces += `<div class="stage-brace-segment"><span></span><i></i></div>`;
+    }
+
+    // Two rows of support points represent the front/rear stand lines.
+    for (let i = 0; i <= visibleModules; i += 1) {
+        supportPoints += `
+            <div class="stage-support-point stage-support-front" style="left:${(i / visibleModules) * 100}%">
+                <span class="stage-stand-leg"></span><span class="stage-base-foot"></span>
+            </div>
+            <div class="stage-support-point stage-support-back" style="left:${(i / visibleModules) * 100}%">
+                <span class="stage-stand-leg"></span><span class="stage-base-foot"></span>
+            </div>`;
+    }
+
+    stagePreview.innerHTML = `
+        <div class="stage-preview-canvas">
+            <div class="stage-dimension-line stage-dimension-horizontal">
+                <span>${modules * 122} cm</span>
+            </div>
+            <div class="stage-dimension-line stage-dimension-vertical">
+                <span>122 cm</span>
+            </div>
+            <div class="stage-riser-scene">
+                <div class="stage-deck-row">${decks}</div>
+                <div class="stage-frame-row">${braces}</div>
+                <div class="stage-support-layer">${supportPoints}</div>
+            </div>
+            <div class="stage-preview-label stage-label-deck">Dek Panggung (Stage Module)</div>
+            <div class="stage-preview-label stage-label-brace">Palang Samping (Stage Brace)</div>
+            <div class="stage-preview-label stage-label-stand">Kaki Panggung (Stage Stand)</div>
+            ${previewScaleNote}
+        </div>`;
+}
+
+stageModuleCount.addEventListener("input", calculateStage);
+
+tabStage.addEventListener("click", () => setCalculatorTab("stage"));
+
+// Extend the existing calculator tab controller with the Stage/Riser module.
+const previousSetCalculatorTab = setCalculatorTab;
+setCalculatorTab = function(tab) {
+    previousSetCalculatorTab(tab === "stage" ? "pixel" : tab);
+    const isStage = tab === "stage";
+    stageCalculator.classList.toggle("hidden", !isStage);
+    tabPixel.classList.toggle("active", tab === "pixel");
+    tabHardware.classList.toggle("active", tab === "hardware");
+    tabPower.classList.toggle("active", tab === "power");
+    tabStage.classList.toggle("active", isStage);
+    tabPixel.setAttribute("aria-selected", String(tab === "pixel"));
+    tabHardware.setAttribute("aria-selected", String(tab === "hardware"));
+    tabPower.setAttribute("aria-selected", String(tab === "power"));
+    tabStage.setAttribute("aria-selected", String(isStage));
+    if (isStage) {
+        pixelCalculator.classList.add("hidden");
+        hardwareCalculator.classList.add("hidden");
+        powerCalculator.classList.add("hidden");
+    }
+};
+
+stageCopyButton.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(stageOutput.textContent);
+        stageCopyText.innerText = "Tersalin!";
+        setTimeout(() => { stageCopyText.innerText = "Salin Teks"; }, 1500);
+    } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = stageOutput.textContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        stageCopyText.innerText = "Tersalin!";
+        setTimeout(() => { stageCopyText.innerText = "Salin Teks"; }, 1500);
+    }
+});
+
+calculateStage();

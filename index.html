@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pixel Calculator + LED Screen Rental Hardware Calculator</title>
+    <title>LED Screen Rental Hardware Calculator</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,6 +27,9 @@
             </button>
             <button type="button" id="tab-power" class="calculator-tab" role="tab" aria-selected="false">
                 Power & Genset Calculator
+            </button>
+            <button type="button" id="tab-stage" class="calculator-tab" role="tab" aria-selected="false">
+                Stage / Riser Calculator
             </button>
         </div>
 
@@ -707,6 +710,120 @@
                     </div>
                     <pre id="powerOutput" class="output-template"></pre>
                 </details>
+            </div>
+        </section>
+
+        <!-- =========================================
+             STAGE / RISER CALCULATOR
+        ========================================== -->
+        <section id="stageCalculator" class="calculator-panel stage-panel hidden">
+            <header class="mb-6 border-b border-slate-800 pb-4">
+                <h1 class="text-2xl font-bold tracking-tight text-emerald-400">
+                    Stage / Riser Calculator
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                    Hitung kebutuhan dek panggung dan komponen riser berdasarkan jumlah modul yang disusun horizontal.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <section class="lg:col-span-5">
+                    <div class="stage-input-card">
+                        <label for="stageModuleCount" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                            Jumlah Modul Stage
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="stageModuleCount" class="resolution-input stage-count-input" min="1" max="100" step="1" placeholder="Contoh: 3">
+                            <span class="text-sm font-semibold text-slate-500">modul</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-2">
+                            Ukuran setiap modul: <strong class="text-slate-300">122 × 122 cm</strong>. Lebar tetap 122 cm dan panjang bertambah sesuai jumlah modul.
+                        </p>
+                    </div>
+
+                    <div id="stageMessage" class="hardware-message mt-4">Masukkan jumlah modul untuk melihat hasil dan live preview.</div>
+
+                    <div id="stageResults" class="hidden mt-4">
+                        <div class="stage-size-card mb-3">
+                            <div>
+                                <span class="hardware-result-label">Ukuran Riser</span>
+                                <strong id="stageDimensionResult">—</strong>
+                            </div>
+                            <span class="stage-dimension-note">panjang × lebar</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="hardware-result-card">
+                                <span class="hardware-result-label">Dek Panggung (Stage Module)</span>
+                                <strong id="stageModuleResult">—</strong>
+                                <span>pcs</span>
+                            </div>
+                            <div class="hardware-result-card">
+                                <span class="hardware-result-label">Palang Samping (Stage Brace)</span>
+                                <strong id="stageBraceResult">—</strong>
+                                <span>pcs</span>
+                            </div>
+                            <div class="hardware-result-card">
+                                <span class="hardware-result-label">Kaki Panggung (Stage Stand)</span>
+                                <strong id="stageStandResult">—</strong>
+                                <span>pcs</span>
+                            </div>
+                            <div class="hardware-result-card">
+                                <span class="hardware-result-label">Tatakan Dasar (Adjustable Base)</span>
+                                <strong id="stageBaseResult">—</strong>
+                                <span>pcs</span>
+                            </div>
+                        </div>
+
+                        <details class="group mt-4">
+                            <summary class="details-summary">▸ Ringkasan Parameter Stage / Riser</summary>
+                            <div class="hardware-summary-actions">
+                                <button type="button" id="stageCopyButton" class="copy-button">
+                                    <span id="stageCopyText">Salin Teks</span>
+                                </button>
+                            </div>
+                            <pre id="stageOutput" class="output-template"></pre>
+                        </details>
+                    </div>
+                </section>
+
+                <section class="lg:col-span-7">
+                    <div class="stage-preview-card">
+                        <div class="preview-header">
+                            <div>
+                                <div class="preview-title">Live Preview Stage / Riser</div>
+                                <div id="stagePreviewDimension" class="stage-preview-dimension">—</div>
+                            </div>
+                            <span class="stage-preview-badge">Visualisasi Konseptual</span>
+                        </div>
+
+                        <div id="stagePreview" class="stage-preview" aria-label="Live preview stage riser">
+                            <div class="stage-preview-empty">Masukkan jumlah modul untuk menampilkan preview.</div>
+                        </div>
+
+                        <div class="stage-preview-legend">
+                            <span><i class="stage-legend-deck"></i>Dek Panggung</span>
+                            <span><i class="stage-legend-frame"></i>Palang Samping</span>
+                            <span><i class="stage-legend-leg"></i>Kaki & Tatakan</span>
+                        </div>
+                    </div>
+
+                    <div class="stage-reference-card mt-4">
+                        <div class="stage-reference-heading">
+                            <div>
+                                <span class="hardware-result-label">Referensi Bentuk</span>
+                                <h2 class="stage-reference-title">Stage / Riser</h2>
+                            </div>
+                            <span class="stage-reference-badge">Foto Referensi</span>
+                        </div>
+                        <div class="stage-reference-image-wrap">
+                            <img src="assets/stage-reference.png" alt="Foto referensi stage atau riser" class="stage-reference-image">
+                        </div>
+                        <p class="stage-reference-note">
+                            Gambar digunakan sebagai gambaran bentuk stage/riser. Preview di atas merupakan visualisasi kalkulator, bukan gambar teknis konstruksi.
+                        </p>
+                    </div>
+                </section>
             </div>
         </section>
 
